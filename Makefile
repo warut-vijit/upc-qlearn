@@ -9,7 +9,7 @@ UPCC = /gpfs/gpfs1/common/upc/12.1.0.3/upc/12.1/bin/xlupc
 # ----------------------------------------------------------------------
 #  #
 all: upc_qlearn.upc upc_qlearn  Makefile
-upc_qlearn: upc_qlearn.upc
+upc_qlearn: upc_qlearn.upc pong.upc
 	${UPCC} $^ -o $@
 #       ${UPCC} $^ -qupc=THREADS=4 -qupc=DNODES=4 -qcheck=allocmem -qcheck=collective -qcheck=stack -qcheck=sync -qcheck=uninit -o $@
 #       #       ${UPCC} $^ -qupc=threads=4 -qupc=dnodes=4 -o $@
