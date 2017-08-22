@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "config.h"
+#include "linalg.h"
 
 /*
  * Simulator of Pong Atari game used by qlearn.h
@@ -15,8 +16,14 @@ typedef struct {
   double p_l, p_r;
 } simulator;
 
-void init(simulator *s);
-void step(simulator *s, int d_l, int d_r);
-void print(simulator *s);
+typedef struct {
+  int first;
+  int second;
+} pair;
+
+void sim_init(simulator *s);
+pair sim_step(simulator *s, int d_l, int d_r);
+void sim_print(simulator *s);
+void sim_to_v(simulator *s, vec *v, int pid); 
 
 #endif
