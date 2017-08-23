@@ -23,6 +23,7 @@ typedef struct {
 
 void sim_init(simulator *s);
 pair sim_step(simulator *s, int d_l, int d_r);
+int is_terminal(simulator *s);
 void sim_print(simulator *s);
 void sim_to_v(simulator *s, vec *v, int pid); 
 

@@ -9,6 +9,8 @@ void sim_init(simulator *s) {
 
 pair sim_step(simulator *s, int d_l, int d_r) {
   pair reward;
+  reward.first = 0;
+  reward.second = 0;
 
   // paddle motion
   s->p_l = fmax(0, fmin(10, s->p_l + PADDLE_SPEED * d_l));
@@ -28,6 +30,7 @@ pair sim_step(simulator *s, int d_l, int d_r) {
     if(abs(s->b_y - s->p_l) < PADDLE_HEIGHT / 2){
       s->b_x *= -1;
       s->b_theta = M_PI - s->b_theta;
+      printf("bounced on left\n");
       reward.first = BOUNCE_REWARD;
       reward.second = 0;
     } else {
@@ -39,6 +42,7 @@ pair sim_step(simulator *s, int d_l, int d_r) {
     if(abs(s->b_y - s->p_r) < PADDLE_HEIGHT / 2){
       s->b_x = 2 * WIDTH - s->b_x;
       s->b_theta = M_PI - s->b_theta;
+      printf("bounced on right\n");
       reward.first = 0;
       reward.second = BOUNCE_REWARD;
     } else {
@@ -47,6 +51,10 @@ pair sim_step(simulator *s, int d_l, int d_r) {
     }
   }
   return reward;
+}
+
+int is_terminal(simulator *s) {
+  return s->b_x > WIDTH || s->b_x < 0; 
 }
 
 void sim_print(simulator *s) {

@@ -4,10 +4,17 @@
 #ifndef QLEARN_H
 #define QLEARN_H
 
-typedef struct {
-  simulator state;
-  int reward;
+typedef struct _state {
+  simulator sim;
+  pair reward;
+  int a_l, a_r;
+  struct _state *next;
 } state;
+
+void state_delete(state *s) {
+  if(s == NULL) return;
+  free(s);
+}
 
 /*
  * Q function approximator using simple nn
@@ -58,16 +65,30 @@ int get_move(simulator *s, policy *p, int pid) {
   tmp = policy_fwd(p, &v);
   action = (tmp > val) ? 1 : action;
   val = fmax(tmp, val);
-  printf("p:%d dir:%d q:%f\n", pid, action, val);
   vec_delete(&v);
   return action;
 }
 
-void step(simulator *s, policy *p) {
-  // compute action for players
-  int a_left = get_move(s, p, LEFT_PLAYER);
-  int a_right = get_move(s, p, RIGHT_PLAYER);
-  sim_step(s, a_left, a_right);
+void collect(simulator *s, policy *p, state **frame_buffer) {
+  int a_left, a_right;
+  state *frame, *head;
+  head = *frame_buffer;
+  pair reward;
+  while(!is_terminal(s)) {
+    // compute action for players
+    a_left = get_move(s, p, LEFT_PLAYER);
+    a_right = get_move(s, p, RIGHT_PLAYER);
+    reward = sim_step(s, a_left, a_right);
+    // create new linked link node
+    frame = (state *) malloc(sizeof(state));
+    frame->sim = *s;
+    frame->reward = reward;
+    frame->a_l = a_left;
+    frame->a_r = a_right;
+    frame->next = head;
+    head = frame;
+  }
+  *frame_buffer = head;
 }
 
 #endif

@@ -17,16 +17,17 @@ int main()
     srand(time(NULL));
     simulator s;
     policy p;
-    state *hist_head;
+    state *frame_iter, *frame_buffer = NULL;
     init(&s, &p);
-    sim_print(&s);
-    step(&s, &p);
-    sim_print(&s);
-    step(&s, &p);
-    sim_print(&s);
-    step(&s, &p);
-    sim_print(&s);
+    collect(&s, &p, &frame_buffer);
+    frame_iter = frame_buffer;
+    int i;
+    while(frame_iter != NULL) {
+      state cur_state = *frame_iter;
+      //printf("b:(%f, %f) a_l:%d a_r:%d r:(%d, %d)\n", cur_state.sim.b_x, cur_state.sim.b_y, cur_state.a_l, cur_state.a_r, cur_state.reward.first, cur_state.reward.second);
+      frame_iter = cur_state.next;
+    }
+    state_delete(frame_buffer); 
   }
-
-  return 0;  
+  return 0; 
 }

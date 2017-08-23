@@ -9,7 +9,7 @@
 #define HEIGHT 10
 #define PADDLE_HEIGHT 1
 #define PADDLE_SPEED 0.1
-#define BALL_SPEED 0.1
+#define BALL_SPEED 0.4
 #define RANDOMNESS 0.02
 #define BOUNCE_REWARD 1
 #define POINT_REWARD 10
