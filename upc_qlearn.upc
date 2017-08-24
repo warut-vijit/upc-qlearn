@@ -17,17 +17,30 @@ int main()
     srand(time(NULL));
     simulator s;
     policy p;
-    state *frame_iter, *frame_buffer = NULL;
-    init(&s, &p);
-    collect(&s, &p, &frame_buffer);
-    frame_iter = frame_buffer;
-    int i;
-    while(frame_iter != NULL) {
-      state cur_state = *frame_iter;
-      //printf("b:(%f, %f) a_l:%d a_r:%d r:(%d, %d)\n", cur_state.sim.b_x, cur_state.sim.b_y, cur_state.a_l, cur_state.a_r, cur_state.reward.first, cur_state.reward.second);
-      frame_iter = cur_state.next;
+    state *frame_iter, *frame_buffer;
+    policy_init(&p);
+
+    int iter;
+    for(iter = 0; iter < ITERATIONS; iter++) {
+      printf("beginning iteration #%d\n", iter+1);
+      frame_buffer = NULL;
+      sim_init(&s);
+
+      // run through simulator, collect states
+      collect(&s, &p, &frame_buffer);
+      frame_iter = frame_buffer;
+      while(frame_iter != NULL) {
+        state cur_state = *frame_iter;
+        frame_iter = cur_state.next;
+      }
+
+      // perform backprop and policy updates with SGD
+      policy_backprop(&p, frame_buffer);
+
+      // delete frame buffer
+      state_delete(frame_buffer);
     }
-    state_delete(frame_buffer); 
+    policy_delete(&p);
   }
   return 0; 
 }

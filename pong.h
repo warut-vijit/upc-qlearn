@@ -17,8 +17,8 @@ typedef struct {
 } simulator;
 
 typedef struct {
-  int first;
-  int second;
+  double first;
+  double second;
 } pair;
 
 void sim_init(simulator *s);

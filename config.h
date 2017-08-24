@@ -16,10 +16,13 @@
 #define POINT_PENALTY -10
 
 // Policy settings
-#define INPUT 5
-#define HIDDEN 32
+#define INPUT 7
+#define HIDDEN 8
 #define OUTPUT 1
-#define LEARNING_RATE 0.01
+#define LEARNING_RATE 0.0005
+#define DISCOUNTING 0.95
+#define ITERATIONS 1000
+#define EPSILON 0.2
 
 // Convenience defines
 #define LEFT_PLAYER 0
