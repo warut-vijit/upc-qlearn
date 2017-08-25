@@ -27,11 +27,18 @@ int main()
       sim_init(&s);
 
       // run through simulator, collect states
-      collect(&s, &p, &frame_buffer);
-      frame_iter = frame_buffer;
-      while(frame_iter != NULL) {
-        state cur_state = *frame_iter;
-        frame_iter = cur_state.next;
+      if(iter == ITERATIONS-1) {
+        collect(&s, &p, &frame_buffer, 0);
+        frame_iter = frame_buffer;
+        while(frame_iter != NULL) {
+          state cur_state = *frame_iter;
+          printf("sim:b:(%f, %f) p_l:%f p_r:%f    act:a_l:%d a_r:%d\n", cur_state.sim.b_x, cur_state.sim.b_y, cur_state.sim.p_l, cur_state.sim.p_r, cur_state.a_l, cur_state.a_r);
+          frame_iter = cur_state.next;
+        }
+      }
+      else {
+        collect(&s, &p, &frame_buffer, EPSILON);
+        frame_iter = frame_buffer;
       }
 
       // perform backprop and policy updates with SGD
@@ -40,6 +47,7 @@ int main()
       // delete frame buffer
       state_delete(frame_buffer);
     }
+
     policy_delete(&p);
   }
   return 0; 

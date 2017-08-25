@@ -4,8 +4,8 @@ void sim_init(simulator *s) {
   s->p_l = s->p_r = HEIGHT / 2;
   s->b_y = HEIGHT / 2;
   s->b_x = WIDTH / 2;
-  s->b_theta = M_PI * (rand() % 2) + rand_dbl(-1 * M_PI / 6, M_PI / 6);
-  //s->b_theta = 0;
+  //s->b_theta = M_PI * (rand() % 2) + rand_dbl(-1 * M_PI / 6, M_PI / 6);
+  s->b_theta = M_PI / 8;
 }
 
 pair sim_step(simulator *s, int d_l, int d_r) {
@@ -28,9 +28,10 @@ pair sim_step(simulator *s, int d_l, int d_r) {
     s->b_theta = 2 * M_PI - s->b_theta;
   }
   if(s->b_x < 0) {
-    if(abs(s->b_y - s->p_l) < PADDLE_HEIGHT / 2){
+    if(fabs(s->b_y - s->p_l) < PADDLE_HEIGHT / 2){
       s->b_x *= -1;
       s->b_theta = M_PI - s->b_theta;
+      printf("bounce left\n");
       reward.first = BOUNCE_REWARD;
       reward.second = 0;
     } else {
@@ -39,7 +40,7 @@ pair sim_step(simulator *s, int d_l, int d_r) {
     }
   }
   else if(s->b_x > WIDTH) {
-    if(abs(s->b_y - s->p_r) < PADDLE_HEIGHT / 2){
+    if(fabs(s->b_y - s->p_r) < PADDLE_HEIGHT / 2){
       s->b_x = 2 * WIDTH - s->b_x;
       s->b_theta = M_PI - s->b_theta;
       reward.first = 0;
@@ -66,16 +67,16 @@ void sim_print(simulator *s) {
 void sim_to_v(simulator *s, vec *v, int pid) {
   vec_create(v, INPUT);
   if(pid == LEFT_PLAYER) {
-    v->data[0] = s->b_x;
+    v->data[0] = s->b_x / WIDTH - 0.5;
     v->data[2] = BALL_SPEED * cos(s->b_theta);
-    v->data[4] = s->p_l;
-    v->data[5] = s->p_r;
+    v->data[4] = s->p_l / HEIGHT - 0.5;
+    v->data[5] = s->p_r / HEIGHT - 0.5;
   } else if(pid == RIGHT_PLAYER) {
-    v->data[0] = WIDTH - s->b_x;
+    v->data[0] = 1 - s->b_x / WIDTH - 0.5;
     v->data[2] = -1 * BALL_SPEED * cos(s->b_theta);
-    v->data[4] = s->p_r;
-    v->data[5] = s->p_l;
+    v->data[4] = s->p_r / HEIGHT - 0.5;
+    v->data[5] = s->p_l / HEIGHT - 0.5;
   }
-  v->data[1] = s->b_y;
+  v->data[1] = s->b_y / HEIGHT - 0.5;
   v->data[3] = BALL_SPEED * sin(s->b_theta);
 }
